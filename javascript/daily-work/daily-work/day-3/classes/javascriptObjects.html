@@ -1,0 +1,28 @@
+<html>
+    <script>
+        const book1 = {
+            title : 'Learn JS',
+            price: 100,
+            authors: [{
+                name: 'Angel'
+            },
+            {
+                name: 'Pedro'
+            }],
+            borrow: function(){
+                console.log('Title of the book is' + this.title);
+                console.log('author is ' + this.authors[0].name);
+                
+            },
+            return: function() {
+                console.log(this.price);
+                this.borrow();
+            }
+        }
+        let {title, price} = book1 //Deconstructing
+        console.log(title);
+        title = 'Learn React';
+        console.log(title);
+        book1.return();
+    </script>
+</html>

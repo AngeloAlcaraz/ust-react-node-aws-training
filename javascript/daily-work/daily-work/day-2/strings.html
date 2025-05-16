@@ -1,0 +1,23 @@
+<html>
+    <script>
+        const s1 = "UST"; // string pool
+        const s2 = new String("UST");
+        const s3 = new String("UST");       
+
+        console.log(s1 == s2);
+        console.log(s3 == s2);
+
+        function reverseString(str) {
+        const chars = [];
+        for (let i = str.length - 1; i >= 0; i--) {
+            chars.push(str[i]);
+        }
+        return chars.join('');   
+        }   
+
+        const s4 = reverseString(s1);
+        console.log(s4);
+        
+        
+    </script>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multi-Step Registration Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    .step { display: none; }
+    .step.active { display: block; }
+    .progress-bar {
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5" style="max-width: 600px;">
+    <h2 class="text-center mb-5">Multi-Step Registration Form</h2>
+   
+    <div class="progress mb-4">
+      <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+        aria-valuemin="0" aria-valuemax="100">Step 1 of 7</div>
+    </div>
+
+    <form id="multiStepForm" novalidate>
+      <div class="step active">
+        <h4>Name:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="firstName">First Name</label>
+          <input type="text" class="form-control" id="firstName" name="firstName" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input type="text" class="form-control" id="lastName" name="lastName" required />
+        </div>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Contact:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" class="form-control" id="email" name="email" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="phone">Phone Number</label>
+          <input type="tel" class="form-control" id="phone" name="phone" required />
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Birth:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="birthdate">Birthdate</label>
+          <input type="date" class="form-control" id="birthdate" name="birthdate" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="gender">Gender</label>
+          <select class="form-select" id="gender" name="gender" required>
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Address:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="address">Complete Address</label>
+          <input type="text" class="form-control" id="address" name="address" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="zipcode">Zip Code</label>
+          <input type="number" class="form-control" id="zipcode" name="zipcode" required />
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Social Media:</h4>
+        <div class="mb-3">
+          <label for="facebook" class="form-label">Facebook Link</label>
+          <input type="text" id="facebook" name="facebook" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="linkedin" class="form-label">LinkedIn Link</label>
+          <input type="text" id="linkedin" name="linkedin" class="form-control" required />
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Login Details:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="username">Username</label>
+          <input type="text" class="form-control" id="username" name="username" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="button" class="btn btn-primary next" disabled>Next</button>
+      </div>
+
+      <div class="step">
+        <h4>Employee Details:</h4>
+        <div class="mb-3">
+          <label class="form-label" for="employeeId">Employee ID</label>
+          <input type="number" class="form-control" id="employeeId" name="employeeId" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="department">Department</label>
+          <select class="form-select" id="department" name="department" required>
+            <option value="">Select</option>
+            <option value="IT">IT</option>
+            <option value="HR">HR</option>
+            <option value="Finance">Finance</option>
+            <option value="Marketing">Marketing</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary prev">Previous</button>
+        <button type="submit" class="btn btn-success" disabled>Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const steps = document.querySelectorAll(".step");
+    const nextBtns = document.querySelectorAll(".next");
+    const prevBtns = document.querySelectorAll(".prev");
+    const form = document.getElementById("multiStepForm");
+    const progressBar = document.getElementById("progressBar");
+    let currentStep = 0;
+
+    function updateProgress() {
+      const percent = ((currentStep + 1) / steps.length) * 100;
+      progressBar.style.width = percent + "%";
+      progressBar.setAttribute("aria-valuenow", percent);
+      progressBar.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+    }
+
+    // Field validation enable/disable Next button.
+    function toggleNextButton() {
+      const currentInputs = steps[currentStep].querySelectorAll("input, select");
+      const nextButton = steps[currentStep].querySelector(".next");
+      const submitButton = steps[currentStep].querySelector("button[type='submit']");
+
+      let allValid = true;
+
+      currentInputs.forEach(input => {
+        if (input.type === "url") {        
+          if (!input.value) {
+            allValid = false;
+          } else {
+            try {
+              new URL(input.value);
+            } catch {
+              allValid = false;
+            }
+          }
+        } else {
+          if (!input.checkValidity()) {
+            allValid = false;
+          }
+        }
+      });
+
+      if (nextButton) nextButton.disabled = !allValid;
+      if (submitButton) submitButton.disabled = !allValid;
+    }
+
+    // Validate if any input or select has changed to enable or disable next button. 
+    steps.forEach((step, index) => {
+      const inputs = step.querySelectorAll("input, select");
+      inputs.forEach(input => {
+        input.addEventListener("input", toggleNextButton);
+        input.addEventListener("change", toggleNextButton);
+      });
+    });
+
+    nextBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const inputs = steps[currentStep].querySelectorAll("input, select");
+        for (let input of inputs) {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            return;
+          }
+        }
+        steps[currentStep].classList.remove("active");
+        currentStep++;
+        steps[currentStep].classList.add("active");
+        updateProgress();
+        toggleNextButton();
+      });
+    });
+
+    prevBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        steps[currentStep].classList.remove("active");
+        currentStep--;
+        steps[currentStep].classList.add("active");
+        updateProgress();
+        toggleNextButton();
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Validar todo antes de enviar
+      let formValid = true;
+      steps.forEach(step => {
+        const inputs = step.querySelectorAll("input, select");
+        inputs.forEach(input => {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            formValid = false;
+          }
+        });
+      });
+
+      if (formValid) {
+        alert("Form submitted successfully!");
+        form.reset();
+        // restart the steps
+        steps[currentStep].classList.remove("active");
+        currentStep = 0;
+        steps[currentStep].classList.add("active");
+        updateProgress();
+        toggleNextButton();
+      }
+    });
+
+    // Initialize 
+    updateProgress();
+    toggleNextButton();
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AJAX CRUD with Vanilla JS</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 5px; padding: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    td, th { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    button.edit, button.delete { margin-left: 5px; }
+  </style>
+</head>
+<body>
+
+<h2>AJAX CRUD (XMLHttpRequest)</h2>
+
+<input type="text" id="titleInput" placeholder="Enter title">
+<button onclick="createPost()">Add Post</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="postList"></tbody>
+</table>
+
+<script>
+  const API_URL = "http://localhost:3000/books";
+  let editId = null;
+
+  function fetchPosts() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", API_URL + "?_limit=5", true);
+    xhr.onload = function () {
+      const posts = JSON.parse(xhr.responseText);
+      const list = document.getElementById("postList");
+      list.innerHTML = "";
+      posts.forEach(post => {
+        list.innerHTML += `
+          <tr>
+            <td>${post.id}</td>
+            <td>${post.title}</td>
+            <td>
+              <button class="edit" onclick="startEdit(${post.id}, '${post.title.replace(/'/g, "\\'")}')">Edit</button>
+              <button class="delete" onclick="deletePost(${post.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    };
+    xhr.send();
+  }
+
+  function createPost() {
+    const input = document.getElementById("titleInput");
+    const title = input.value.trim();
+    if (!title) return alert("Title required");
+
+    const xhr = new XMLHttpRequest();
+    const method = editId ? "PUT" : "POST";
+    const url = editId ? `${API_URL}/${editId}` : API_URL;
+
+    xhr.open(method, url, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.onload = function () {
+      alert(editId ? "Post updated!" : "Post added!");
+      input.value = "";
+      editId = null;
+      fetchPosts();
+    };
+    xhr.send(JSON.stringify({ title: title }));
+  }
+
+  function startEdit(id, title) {
+    document.getElementById("titleInput").value = title;
+    editId = id;
+  }
+
+  function deletePost(id) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("DELETE", `${API_URL}/${id}`, true);
+    xhr.onload = function () {
+      alert("Post deleted!");
+      fetchPosts();
+    };
+    xhr.send();
+  }
+
+  // Initial load
+  fetchPosts();
+</script>
+
+</body>
+</html>

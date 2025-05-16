@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD with Fetch</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        input,
+        button {
+            margin: 5px;
+            padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        td,
+        th {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        button.edit,
+        button.delete {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>CRUD UI with Fetch API</h2>
+
+    <input type="text" id="titleInput" placeholder="Enter task title">
+    <button onclick="createOrUpdatePost()">Save</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="postList"></tbody>
+    </table>
+
+    <script>
+        const API_URL = "http://localhost:3000/books";
+        let editId = null;
+
+        async function fetchPosts() {
+            const res = await fetch(API_URL + '?_limit=5');
+            const posts = await res.json();
+            const list = document.getElementById("postList");
+            list.innerHTML = '';
+            posts.forEach(post => {
+                list.innerHTML += `
+        <tr>
+          <td>${post.id}</td>
+          <td>${post.title}</td>
+          <td>
+            <button class="edit" onclick="startEdit(${post.id}, '${post.title.replace(/'/g, "\\'")}')">Edit</button>
+            <button class="delete" onclick="deletePost(${post.id})">Delete</button>
+          </td>
+        </tr>
+      `;
+            });
+        }
+
+        async function createOrUpdatePost() {
+            const input = document.getElementById('titleInput');
+            const title = input.value.trim();
+            if (!title) return alert("Enter a title");
+
+            const method = editId ? 'PUT' : 'POST';
+            const url = editId ? `${API_URL}/${editId}` : API_URL;
+
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title })
+            });
+
+            const result = await response.json();
+            alert(editId ? 'Post updated!' : 'Post added!');
+            input.value = '';
+            editId = null;
+            fetchPosts();
+        }
+
+        function startEdit(id, title) {
+            document.getElementById('titleInput').value = title;
+            editId = id;
+        }
+
+        async function deletePost(id) {
+            const confirmed = confirm("Are you sure you want to delete?");
+            if (!confirmed) return;
+
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            alert('Post deleted!');
+            fetchPosts();
+        }
+
+        // Load data on start
+        fetchPosts();
+    </script>
+
+</body>
+
+</html>

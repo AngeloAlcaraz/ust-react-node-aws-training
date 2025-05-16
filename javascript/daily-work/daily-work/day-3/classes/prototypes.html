@@ -1,0 +1,21 @@
+<html>
+  <script>
+    function Person(name, age) { // Simulate class like behavior
+      this.name = name;
+      this.age1 = age;
+    }
+    const p1 = new Person("Angel", 43);
+    
+    Person.prototype.walk = function (){
+        console.log('walking');
+        
+    }
+    p1.walk();
+    console.log(p1.name);
+    console.log(p1.age1);
+
+    console.log(Array.prototype);
+    
+
+  </script>
+</html>

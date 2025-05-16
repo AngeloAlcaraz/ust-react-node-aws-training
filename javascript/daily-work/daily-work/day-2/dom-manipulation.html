@@ -1,0 +1,47 @@
+<html>
+    <script>
+        // function add(){
+        //     const number1 = document.getElementById("number1");
+        //     const number2 = document.getElementById("number2");
+        //     const divElement = document.getElementById("Result");
+        //     const radioElements = document.getElementsByName("gender");
+        //     divElement.textContent = parseInt(number1.value) + parseInt(number2.value);
+        // }}
+
+        function add() {
+            var sum = 0;
+            const numbers = document.getElementsByTagName('input');
+
+            for(var i = 0; i < numbers.length; i++){
+                sum = sum + numbers[i].value;
+            }
+
+            const divElement = document.getElementById("Result");
+            divElement.textContent = parseInt(sum); 
+
+            // const number1 = document.getElementById("number1").value;
+            // const number2 = document.getElementById("number2").value;
+
+           
+            // radioElements.forEach((radio) => {
+            //     if (radio.checked) {
+            //         if (radio.id === "number1") {
+            //             number1; 
+            //         } else if (radio.id === "number2") {
+            //             number2; 
+            //         }
+            //     }
+            // });
+            
+            // const divElement = document.getElementById("Result");
+            // divElement.textContent = "Result: " + (number1 + number2); 
+        }
+    </script>
+    <body>
+        <input type="radio" id="number1" name="gender" value="Male">Male
+        <input type="radio" id="number2" name="gender" value="Female">Female
+        <button onclick="add()">add</button>
+        <button onclick="add()">add new field</button>
+        Result : <div id="Result"></div>
+    </body>
+</html>
