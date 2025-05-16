@@ -1,0 +1,19 @@
+{
+  "books": [
+    {
+      "title": "Testing",
+      "author": "Me",
+      "id": "bb95"
+    },
+    {
+      "id": "6a56",
+      "title": "The crystal ship",
+      "author": "Jane Doe"
+    },
+    {
+      "id": "ecf9",
+      "title": "Test 2",
+      "author": "Me"
+    }
+  ]
+}

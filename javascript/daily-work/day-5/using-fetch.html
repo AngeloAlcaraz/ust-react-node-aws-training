@@ -64,15 +64,15 @@
             list.innerHTML = '';
             posts.forEach(post => {
                 list.innerHTML += `
-        <tr>
-          <td>${post.id}</td>
-          <td>${post.title}</td>
-          <td>
-            <button class="edit" onclick="startEdit(${post.id}, '${post.title.replace(/'/g, "\\'")}')">Edit</button>
-            <button class="delete" onclick="deletePost(${post.id})">Delete</button>
-          </td>
-        </tr>
-      `;
+                    <tr>
+                      <td>${post.id}</td>
+                      <td>${post.title}</td>
+                      <td>
+                        <button class="edit" onclick="startEdit('${post.id}', '${post.title.replace(/'/g, "\\'")}')">Edit</button>
+                        <button class="delete" onclick="deletePost('${post.id}')">Delete</button>
+                      </td>
+                    </tr>
+                `;
             });
         }
 
@@ -90,7 +90,11 @@
                 body: JSON.stringify({ title })
             });
 
-            const result = await response.json();
+            if (!response.ok) {
+                alert("Error saving post");
+                return;
+            }
+
             alert(editId ? 'Post updated!' : 'Post added!');
             input.value = '';
             editId = null;
@@ -106,7 +110,12 @@
             const confirmed = confirm("Are you sure you want to delete?");
             if (!confirmed) return;
 
-            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                alert("Error deleting post");
+                return;
+            }
+
             alert('Post deleted!');
             fetchPosts();
         }

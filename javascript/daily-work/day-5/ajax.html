@@ -34,27 +34,27 @@
   let editId = null;
 
   function fetchPosts() {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", API_URL + "?_limit=5", true);
-    xhr.onload = function () {
-      const posts = JSON.parse(xhr.responseText);
-      const list = document.getElementById("postList");
-      list.innerHTML = "";
-      posts.forEach(post => {
-        list.innerHTML += `
-          <tr>
-            <td>${post.id}</td>
-            <td>${post.title}</td>
-            <td>
-              <button class="edit" onclick="startEdit(${post.id}, '${post.title.replace(/'/g, "\\'")}')">Edit</button>
-              <button class="delete" onclick="deletePost(${post.id})">Delete</button>
-            </td>
-          </tr>
-        `;
-      });
-    };
-    xhr.send();
-  }
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", API_URL + "?_limit=5", true);
+  xhr.onload = function () {
+    const posts = JSON.parse(xhr.responseText);
+    const list = document.getElementById("postList");
+    list.innerHTML = "";
+    posts.forEach(post => {
+      list.innerHTML += `
+        <tr>
+          <td>${post.id}</td>
+          <td>${post.title}</td>
+          <td>
+            <button class="edit" onclick="startEdit('${post.id}', '${post.title.replace(/'/g, "\\'")}')">Edit</button>
+            <button class="delete" onclick="deletePost('${post.id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    });
+  };
+  xhr.send();
+}
 
   function createPost() {
     const input = document.getElementById("titleInput");
