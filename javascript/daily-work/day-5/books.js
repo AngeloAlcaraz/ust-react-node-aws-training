@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:3000/books";
 let editId = null;
+let postIdToDelete = null;
 
 // Fetch Post function
 async function fetchPosts() {
@@ -36,38 +37,57 @@ async function fetchPosts() {
 }
 
 // Create or Update function
-async function createOrUpdatePost() {
+async function createOrUpdatePost(event) {
+  event.preventDefault(); // Avoid submit
+
+  const saveBtn = document.getElementById("saveBtn");
   const titleInput = document.getElementById("titleInput");
   const authorInput = document.getElementById("authorInput");
   const title = titleInput.value.trim();
   const author = authorInput.value.trim();
 
+  //Disable button while processing
+  saveBtn.disabled = true;
+
   const method = editId ? "PUT" : "POST";
   const url = editId ? `${API_URL}/${editId}` : API_URL;
 
-  const response = await fetch(url, {
-    method: method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, author }),
-  });
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, author }),
+    });
 
-  if (!response.ok) {
-    alert("Error saving book");
-    return;
+    if (!response.ok) {
+      showToast("Error saving book", "error");
+      return;
+    }
+
+    showToast(editId ? "Book updated!" : "Book added!", "success");
+
+    titleInput.value = "";
+    authorInput.value = "";
+    editId = null;
+
+    // Close modal
+    const modalEl = document.getElementById("bookModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+
+    fetchPosts();
+  } catch (error) {
+    showToast("Error saving book", "error");
+  } finally {
+    // Enable save button again.
+    saveBtn.disabled = false;
   }
-
-  alert(editId ? "Book updated!" : "Book added!");
-  titleInput.value = "";
-  authorInput.value = "";
-  editId = null;
-
-  // Close modal
-  const modalEl = document.getElementById("bookModal");
-  const modal = bootstrap.Modal.getInstance(modalEl);
-  modal.hide();
-
-  fetchPosts();
 }
+
+// Associate the submit button form.
+document
+  .getElementById("bookForm")
+  .addEventListener("submit", createOrUpdatePost);
 
 // Modal Edit
 function startEdit(id, title, author) {
@@ -81,19 +101,13 @@ function startEdit(id, title, author) {
   modal.show();
 }
 
-//Delete function
+// Delete function
 async function deletePost(id) {
-  const confirmed = confirm("Are you sure you want to delete?");
-  if (!confirmed) return;
+  postIdToDelete = id;
 
-  const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-  if (!response.ok) {
-    alert("Error deleting post");
-    return;
-  }
-
-  alert("Post deleted!");
-  fetchPosts();
+  const deleteModalEl = document.getElementById("deleteModal");
+  const deleteModal = new bootstrap.Modal(deleteModalEl);
+  deleteModal.show();
 }
 
 //FilterBooks function
@@ -105,6 +119,43 @@ function filterBooks() {
     const text = row.textContent.toLowerCase();
     row.style.display = text.includes(input) ? "" : "none";
   });
+}
+
+// Delete modal functionality
+document
+  .getElementById("confirmDeleteBtn")
+  .addEventListener("click", async () => {
+    if (!postIdToDelete) return;
+
+    try {
+      const response = await fetch(`${API_URL}/${postIdToDelete}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        showToast("Error deleting post");
+        return;
+      }
+
+      const deleteModalEl = document.getElementById("deleteModal");
+      const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+      deleteModal.hide();
+
+      showToast("Post deleted!");
+      fetchPosts();
+
+      postIdToDelete = null;
+    } catch (error) {
+      showToast("Error deleting post");
+    }
+  });
+
+// Toast function
+function showToast(message) {
+  const toastEl = document.getElementById("messageToast");
+  const toastBody = document.getElementById("toastBody");
+  toastBody.textContent = message;
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
 }
 
 // Listen to form submit
