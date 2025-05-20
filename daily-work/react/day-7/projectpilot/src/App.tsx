@@ -14,8 +14,7 @@ function App() {
           <span className="icon-home"></span>
           Home
         </NavLink>
-        <NavLink to="/projects" className="button rounded">
-          <span className="icon-home"></span>
+        <NavLink to="/projects" className="button rounded">          
           Projects
         </NavLink>
       </header>

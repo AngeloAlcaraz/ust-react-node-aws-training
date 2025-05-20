@@ -53,7 +53,6 @@ function ProjectsPage() {
 
     return (
         <>
-            <h1>Projects</h1>
             {error && (
                 <div className="row">
                     <div className="card large error">
