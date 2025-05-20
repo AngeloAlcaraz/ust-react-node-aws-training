@@ -1,25 +1,29 @@
-import PropTypes from 'prop-types';
 import { Project } from './Project';
 import ProjectCard from './ProjectCard';
 import ProjectForm from './ProjectForm';
+import { useState } from 'react';
 
-type ProjectListProps = {
+interface ProjectListProps {
   projects: Project[];
 };
 
 function ProjectList({ projects }: ProjectListProps) {
+  const [projectBeingEdited, setProjectBeingEdited] = useState({});
+
+  const handleEdit = (project: Project) => {
+    setProjectBeingEdited(project);
+  };
+
   const items = projects.map(project => (
-    <div key={project.id} className="cols-sm">      
-      <ProjectCard project={project} />
-      <ProjectForm />
+    <div key={project.id} className="cols-sm">
+      {project === projectBeingEdited ? (
+        <ProjectForm />
+      ) : (
+        <ProjectCard project={project} onEdit={handleEdit} />
+      )}
     </div>
   ));
   return <div className="row">{items}</div>;
-
 }
-
-ProjectList.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.instanceOf(Project)).isRequired
-};
 
 export default ProjectList;

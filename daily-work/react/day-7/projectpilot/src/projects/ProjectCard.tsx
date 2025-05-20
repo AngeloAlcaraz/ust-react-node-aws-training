@@ -4,10 +4,19 @@ function formatDescription(description: string) {
   return description.substring(0, 60) + '...';
 }
 
-function ProjectCard({ project }: { project: Project }) {
+interface ProjectCardProps {
+  project: Project;
+  onEdit: (project: Project) => void;
+}
+
+function ProjectCard(props: ProjectCardProps) {
+  const { project,
+    onEdit
+  } = props;
   const handleEditClick = (projectBeingEdited: Project) => {
-    console.log(projectBeingEdited);
+    onEdit(projectBeingEdited);
   };
+
   return (
     <div className="card">
       <img src={project.imageUrl} alt={project.name} />
@@ -17,7 +26,8 @@ function ProjectCard({ project }: { project: Project }) {
         </h5>
         <p>{formatDescription(project.description)}</p>
         <p>Budget : {project.budget.toLocaleString()}</p>
-        <button className="bordered"
+        <button
+          className=" bordered"
           onClick={() => {
             handleEditClick(project);
           }}
