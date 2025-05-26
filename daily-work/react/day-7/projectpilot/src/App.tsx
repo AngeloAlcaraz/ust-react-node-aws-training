@@ -3,8 +3,10 @@ import { BrowserRouter, Route, Routes, NavLink } from "react-router";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
 import ProjectPage from './projects/ProjectPage';
+import NewProjectPage from "./projects/newProjectPage";
 
 function App() {
+
   return (
     <BrowserRouter>
       <header className="sticky">
@@ -15,8 +17,11 @@ function App() {
           <span className="icon-home"></span>
           Home
         </NavLink>
-        <NavLink to="/projects" className="button rounded">
+        <NavLink to="/projects" className="button rounded" end>
           Projects
+        </NavLink>
+        <NavLink to="/projects/new" className="button rounded">
+          New Projects
         </NavLink>
       </header>
       <div className="container">
@@ -24,6 +29,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectPage />} />
+          <Route path="/projects/new" element={<NewProjectPage />} />
         </Routes>
       </div>
     </BrowserRouter>
