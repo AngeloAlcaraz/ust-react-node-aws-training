@@ -2,13 +2,13 @@
   "projects": [
     {
       "id": 1,
-      "name": "Johnson - Kutch",
+      "name": "Johnson - Kutch - Testing",
       "description": "Fully-configurable intermediate framework. Ullam occaecati libero laudantium nihil voluptas omnis qui modi qui.",
       "imageUrl": "/assets/placeimg_500_300_arch4.jpg",
       "contractTypeId": 3,
       "contractSignedOn": "2013-08-04T22:39:41.473Z",
-      "budget": 54637,
-      "isActive": false
+      "budget": 1,
+      "isActive": true
     },
     {
       "id": 2,
@@ -42,13 +42,13 @@
     },
     {
       "id": 5,
-      "name": "Crona Inc",
+      "name": "Crona Inc - Test",
       "description": "Monitored explicit methodology. Rem quos maxime amet autem beatae quisquam excepturi sint velit.",
       "imageUrl": "/assets/placeimg_500_300_arch5.jpg",
       "contractTypeId": 1,
       "contractSignedOn": "2016-11-14T19:19:53.624Z",
-      "budget": 31350,
-      "isActive": true
+      "budget": 1,
+      "isActive": false
     },
     {
       "id": 6,

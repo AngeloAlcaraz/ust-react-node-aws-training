@@ -1,5 +1,5 @@
 import { Project } from './Project';
-const baseUrl = 'http://localhost:4000';
+const baseUrl = 'http://localhost:3000';
 const url = `${baseUrl}/projects`;
 
 function translateStatusToErrorMessage(status: number) {
@@ -91,6 +91,26 @@ const projectAPI = {
         const response_1 = await checkStatus(response);
         const item = await parseJSON(response_1);
         return convertToProjectModel(item);
+    },
+
+    async post(project: Omit<Project, 'id'>) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(project),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const response_1 = await checkStatus(response);
+            const createdProject = await parseJSON(response_1);
+            return convertToProjectModel(createdProject);
+        } catch (error) {
+            console.log('log client error ' + error);
+            throw new Error(
+                'There was an error creating the project. Please try again.'
+            );
+        }
     },
 
 };
