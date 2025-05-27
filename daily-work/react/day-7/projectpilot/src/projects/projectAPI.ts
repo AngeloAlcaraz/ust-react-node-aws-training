@@ -58,7 +58,7 @@ const projectAPI = {
             .then(delay(600))
             .then(checkStatus)
             .then(parseJSON)
-            .then(convertToProjectModels)
+            .then(result => convertToProjectModels(result.data))
             .catch((error: TypeError) => {
                 console.log('log client error ' + error);
                 throw new Error(
@@ -69,7 +69,7 @@ const projectAPI = {
 
     async put(project: Project) {
         try {
-            const response = await fetch(`${url}/${project.id}`, {
+            const response = await fetch(`${url}/${project._id}`, {
                 method: 'PUT',
                 body: JSON.stringify(project),
                 headers: {
@@ -86,14 +86,14 @@ const projectAPI = {
         }
     },
 
-    async find(id: number) {
+    async find(id: string) {
         const response = await fetch(`${url}/${id}`);
         const response_1 = await checkStatus(response);
         const item = await parseJSON(response_1);
         return convertToProjectModel(item);
     },
 
-    async post(project: Omit<Project, 'id'>) {
+    async post(project: Omit<Project, '_id'>) {
         try {
             const response = await fetch(url, {
                 method: 'POST',
