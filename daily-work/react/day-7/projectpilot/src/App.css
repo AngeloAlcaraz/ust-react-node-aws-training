@@ -55,7 +55,13 @@
 
 .row {
   display: flex;
-  justify-content: center; /* centra horizontalmente */
-  flex-wrap: wrap;         /* para que las columnas bajen a la siguiente línea */
-  gap: 16px;               /* separación entre columnas */
+  justify-content: center; 
+  flex-wrap: wrap;         
+  gap: 16px;               
+}
+
+.form-container {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }

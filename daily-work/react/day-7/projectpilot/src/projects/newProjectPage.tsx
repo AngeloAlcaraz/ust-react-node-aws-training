@@ -36,11 +36,13 @@ function NewProjectPage() {
   return (
     <div>
       <h2>Create New Project</h2>
-      <ProjectForm
-        project={project}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+      <div className="form-container">
+        <ProjectForm
+          project={project}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      </div>
     </div>
   );
 }
