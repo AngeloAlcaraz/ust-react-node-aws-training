@@ -1,5 +1,6 @@
 import { useState, useEffect, type SyntheticEvent } from "react";
 import { Project } from "./Project";
+import Swal from 'sweetalert2';
 
 interface ProjectFormProps {
   project: Project;
@@ -55,6 +56,13 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     }
 
     onSave(project);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Project Saved',
+      text: 'The project has been added successfully!',
+      confirmButtonText: 'OK',
+    });
   };
 
   const handleChange = (
@@ -134,7 +142,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         <input
           id="isActive"
           name="isActive"
-          type="checkbox" 
+          type="checkbox"
           checked={project.isActive}
           onChange={handleChange}
         />

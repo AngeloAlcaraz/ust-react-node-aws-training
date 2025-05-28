@@ -40,7 +40,7 @@ function ProjectCard(props: ProjectCardProps) {
         await onDelete(project._id || '');
         MySwal.fire({
           title: "Deleted!",
-          text: "Your file has been deleted.",
+          text: "The project has been deleted.",
           icon: "success"
         });
       } catch {
