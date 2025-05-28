@@ -9,7 +9,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
 
   return (
     <div className="row">
-      <div className="col-sm-6">
+      <div className="col-sm-6" style={{ maxWidth: '41%' }}>
         <div className="card large">
           {project.imageUrl ? (
             <img

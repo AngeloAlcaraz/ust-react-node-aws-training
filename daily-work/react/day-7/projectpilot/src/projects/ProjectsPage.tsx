@@ -3,7 +3,7 @@ import { Project } from "./Project";
 import { useState, useEffect } from "react";
 import { ProjectAPI } from "./ProjectAPI";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 21;
 
 function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -107,7 +107,7 @@ function ProjectsPage() {
                             className="button default fluid"
                             onClick={handleMoreClick}
                             disabled={loading}
-                            style={{ width: '100%' }}
+                            style={{ width: '1030px' }}
                         >
                             More...
                         </button>

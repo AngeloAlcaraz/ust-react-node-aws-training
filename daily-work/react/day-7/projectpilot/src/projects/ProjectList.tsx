@@ -63,7 +63,7 @@ function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
     );
   });
 
-  return <div className="row">{items}</div>;
+  return <div className="row justify-content-center">{items}</div>;
 }
 
 export default ProjectList;
