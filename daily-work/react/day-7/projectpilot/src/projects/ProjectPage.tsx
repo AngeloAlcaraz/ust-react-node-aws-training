@@ -9,9 +9,10 @@ function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
-  const id = Number(params.id);
+  const id = params.id;
 
   useEffect(() => {
+    if (!id) return;
     setLoading(true);
     projectAPI
       .find(id)
@@ -49,7 +50,11 @@ function ProjectPage() {
           )}
         </div>
 
-        {project && <ProjectDetail project={project} />}
+        {project && (
+          <div className="center-content">
+            <ProjectDetail project={project} />
+          </div>
+        )}
       </>
     </div>
   );

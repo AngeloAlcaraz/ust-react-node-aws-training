@@ -13,20 +13,36 @@ function ProjectsPage() {
         setCurrentPage((currentPage) => currentPage + 1);
     };
 
-    const saveProject = (project: Project) => {
-        projectAPI
-            .put(project)
-            .then((updatedProject) => {
-                const updatedProjects = projects.map((p: Project) => {
-                    return p._id === project._id ? new Project(updatedProject) : p;
-                });
-                setProjects(updatedProjects);
-            })
-            .catch((e) => {
-                if (e instanceof Error) {
-                    setError(e.message);
-                }
-            });
+    const saveProject = async (project: Project): Promise<Project> => {
+        try {
+            console.log('Sending to API:', project);            // Qué envías
+            const updatedProject = await projectAPI.put(project);
+            console.log('Response from API:', updatedProject);  // Qué recibes
+
+            const updatedProjects = projects.map((p: Project) =>
+                p._id === project._id ? updatedProject : p
+            );
+            setProjects(updatedProjects);
+            return updatedProject;
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message);
+            }
+            throw e;
+        }
+    };
+
+
+    const handleDelete = async (projectId: string): Promise<void> => {
+        try {
+            await projectAPI.delete(projectId);
+            setProjects((prev) => prev.filter((p) => p._id !== projectId));
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message);
+            }
+            throw e;
+        }
     };
 
     useEffect(() => {
@@ -38,7 +54,7 @@ function ProjectsPage() {
                 if (currentPage === 1) {
                     setProjects(data);
                 } else {
-                    setProjects((projects) => [...projects, ...data]);
+                    setProjects((prev) => [...prev, ...data]);
                 }
             } catch (e) {
                 if (e instanceof Error) {
@@ -65,10 +81,13 @@ function ProjectsPage() {
                     </div>
                 </div>
             )}
+
             <ProjectList
-                onSave={saveProject}
                 projects={projects}
+                onSave={saveProject}
+                onDelete={handleDelete}
             />
+
             {!loading && !error && (
                 <div className="row">
                     <div className="col-sm-12">
@@ -80,6 +99,7 @@ function ProjectsPage() {
                     </div>
                 </div>
             )}
+
             {loading && (
                 <div className="center-page">
                     <span className="spinner primary"></span>
@@ -87,7 +107,7 @@ function ProjectsPage() {
                 </div>
             )}
         </>
-    )
+    );
 }
 
 export default ProjectsPage;
