@@ -1,6 +1,12 @@
 import { Project } from './Project';
 import { Link } from 'react-router';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+const MySwal = withReactContent(Swal);
+
 function formatDescription(description: string) {
   return description.substring(0, 60) + '...';
 }
@@ -18,10 +24,28 @@ function ProjectCard(props: ProjectCardProps) {
     onEdit(projectBeingEdited);
   };
 
-  const handleDeleteClick = () => {
-    if (window.confirm(`Are you sure you want to delete ${project.name}?`)) {
-      console.log(project._id );      
-      onDelete(project._id || '');
+  const handleDeleteClick = async () => {
+    const result = await MySwal.fire({
+      title: `Are you sure you want to delete ${project.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      buttonsStyling: true 
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await onDelete(project._id || '');
+        MySwal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      } catch {
+        MySwal.fire('Error!', 'There was a problem deleting the project.', 'error');
+      }
     }
   };
 
@@ -40,7 +64,7 @@ function ProjectCard(props: ProjectCardProps) {
           className="bordered"
           onClick={() => handleEditClick(project)}
           style={{
-            marginLeft: '8px',            
+            marginLeft: '8px',
             border: '1px solid red',
             padding: '6px 12px',
             borderRadius: '4px',
