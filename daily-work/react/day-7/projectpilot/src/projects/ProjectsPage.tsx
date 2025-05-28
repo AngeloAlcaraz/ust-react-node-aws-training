@@ -1,24 +1,27 @@
 import ProjectList from './ProjectList';
 import { Project } from "./Project";
 import { useState, useEffect } from "react";
-import { projectAPI } from './projectAPI';
+import { ProjectAPI } from "./ProjectAPI";
+
+
+const PAGE_SIZE = 20;
 
 function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true); 
 
     const handleMoreClick = () => {
-        setCurrentPage((currentPage) => currentPage + 1);
+        if (!loading && hasMore) {
+            setCurrentPage((prev) => prev + 1);
+        }
     };
 
     const saveProject = async (project: Project): Promise<Project> => {
         try {
-            console.log('Sending to API:', project);            // Qué envías
-            const updatedProject = await projectAPI.put(project);
-            console.log('Response from API:', updatedProject);  // Qué recibes
-
+            const updatedProject = await ProjectAPI.put(project);
             const updatedProjects = projects.map((p: Project) =>
                 p._id === project._id ? updatedProject : p
             );
@@ -32,10 +35,9 @@ function ProjectsPage() {
         }
     };
 
-
     const handleDelete = async (projectId: string): Promise<void> => {
         try {
-            await projectAPI.delete(projectId);
+            await ProjectAPI.delete(projectId);
             setProjects((prev) => prev.filter((p) => p._id !== projectId));
         } catch (e) {
             if (e instanceof Error) {
@@ -49,12 +51,24 @@ function ProjectsPage() {
         async function loadProjects() {
             setLoading(true);
             try {
-                const data = await projectAPI.get(currentPage);
+                const data = await ProjectAPI.get(currentPage, PAGE_SIZE);
                 setError('');
+
+                // Si la API devuelve menos proyectos que PAGE_SIZE,
+                // significa que no hay más datos para cargar
+                if (data.length < PAGE_SIZE) {
+                    setHasMore(false);
+                }
+
                 if (currentPage === 1) {
                     setProjects(data);
                 } else {
-                    setProjects((prev) => [...prev, ...data]);
+                    // Evitar duplicados si API regresa IDs iguales
+                    setProjects((prev) => {
+                        const existingIds = new Set(prev.map((p) => p._id));
+                        const newProjects = data.filter((p) => !existingIds.has(p._id));
+                        return [...prev, ...newProjects];
+                    });
                 }
             } catch (e) {
                 if (e instanceof Error) {
@@ -88,11 +102,15 @@ function ProjectsPage() {
                 onDelete={handleDelete}
             />
 
-            {!loading && !error && (
+            {!loading && !error && hasMore && (
                 <div className="row">
                     <div className="col-sm-12">
                         <div className="button-group fluid">
-                            <button className="button default" onClick={handleMoreClick}>
+                            <button
+                                className="button default"
+                                onClick={handleMoreClick}
+                                disabled={loading} // Evitar múltiples clics mientras carga
+                            >
                                 More...
                             </button>
                         </div>

@@ -52,14 +52,17 @@ function convertToProjectModel(item: any): Project {
     return new Project(item);
 }
 
-const projectAPI = {
+const ProjectAPI = {
     //Get all projects with pagination and sorting
     get(page = 1, limit = 20) {
         return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
             .then(delay(600))
             .then(checkStatus)
             .then(parseJSON)
-            .then(result => convertToProjectModels(result.data))
+            .then(result => {
+                console.log('API response:', result);
+                return convertToProjectModels(result.data || result);
+            })
             .catch((error: TypeError) => {
                 console.log('log client error ' + error);
                 throw new Error(
@@ -83,7 +86,7 @@ const projectAPI = {
             const updatedProjectData = await parseJSON(apiResponse);
             return convertToProjectModel(updatedProjectData.data);
 
-        } catch (error) {   
+        } catch (error) {
             console.log('log client error ' + error);
             throw new Error('There was an error updating the project. Please try again.');
         }
@@ -134,4 +137,4 @@ const projectAPI = {
     },
 };
 
-export { projectAPI };
+export { ProjectAPI };

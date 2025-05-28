@@ -5,8 +5,8 @@ import ProjectForm from './ProjectForm';
 
 interface ProjectListProps {
   projects: Project[];
-  onSave: (project: Project) => void;        // No async/Promise
-  onDelete: (projectId: string) => void;     // No async/Promise
+  onSave: (project: Project) => void;        
+  onDelete: (projectId: string) => void;     
 }
 
 function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
@@ -22,8 +22,8 @@ function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
 
   const handleSaveLocal = async (project: Project) => {
     try {
-      await onSave(project);      // Aunque el tipo no es async, usas await para permitir que onSave devuelva Promise si quiere
-      setProjectBeingEdited(null); // Cierra el formulario después de guardar
+      await onSave(project);      
+      setProjectBeingEdited(null); 
     } catch (error) {
       alert('Could not save the project. Please try again.');
       console.error(error);
@@ -32,8 +32,7 @@ function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
 
   const handleDelete = async (projectId: string) => {
     try {
-      await onDelete(projectId);
-      // Opcional: si el proyecto que se está editando fue eliminado, cancelamos edición
+      await onDelete(projectId);      
       if (projectBeingEdited?._id === projectId) {
         setProjectBeingEdited(null);
       }
@@ -63,7 +62,6 @@ function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
       </div>
     );
   });
-
 
   return <div className="row">{items}</div>;
 }

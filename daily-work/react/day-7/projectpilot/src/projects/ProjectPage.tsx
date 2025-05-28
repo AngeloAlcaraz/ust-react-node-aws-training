@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { projectAPI } from './projectAPI';
+import { ProjectAPI } from './ProjectAPI';
 import ProjectDetail from './ProjectDetail';
 import { Project } from './Project';
 import { useParams } from 'react-router';
@@ -14,7 +14,7 @@ function ProjectPage() {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    projectAPI
+    ProjectAPI
       .find(id)
       .then((data) => {
         setProject(data);

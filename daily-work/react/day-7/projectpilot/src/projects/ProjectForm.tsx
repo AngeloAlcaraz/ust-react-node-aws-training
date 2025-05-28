@@ -14,9 +14,8 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     description: '',
     budget: '',
   });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Para mostrar errores solo después del primer submit
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Resetear estado cuando cambia el proyecto inicial
   useEffect(() => {
     setProject(initialProject);
     setErrors({ name: '', description: '', budget: '' });
@@ -52,7 +51,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     setErrors(validationErrors);
 
     if (!Object.values(validationErrors).every(e => e === '')) {
-      return; // Si hay errores, no continuar
+      return; 
     }
 
     onSave(project);
@@ -75,8 +74,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
 
     const updatedProject = new Project({ ...project, [name]: updatedValue });
     setProject(updatedProject);
-
-    // Validar en cada cambio solo si el usuario ya intentó enviar
+    
     if (isSubmitted) {
       setErrors(validate(updatedProject));
     }
