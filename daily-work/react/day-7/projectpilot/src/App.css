@@ -34,14 +34,21 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 0em;
 }
 
 .read-the-docs {
   color: #888;
 }
 
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
 
-
-
-
+.checkbox-group label {
+  margin-bottom: 0; 
+}

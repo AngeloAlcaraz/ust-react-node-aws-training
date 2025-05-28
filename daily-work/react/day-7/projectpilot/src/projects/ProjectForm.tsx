@@ -51,7 +51,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     setErrors(validationErrors);
 
     if (!Object.values(validationErrors).every(e => e === '')) {
-      return; 
+      return;
     }
 
     onSave(project);
@@ -74,7 +74,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
 
     const updatedProject = new Project({ ...project, [name]: updatedValue });
     setProject(updatedProject);
-    
+
     if (isSubmitted) {
       setErrors(validate(updatedProject));
     }
@@ -87,7 +87,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         id="name"
         name="name"
         type="text"
-        placeholder="enter name"
+        placeholder="Enter Name"
         autoComplete="off"
         value={project.name}
         onChange={handleChange}
@@ -102,7 +102,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
       <textarea
         id="description"
         name="description"
-        placeholder="enter description"
+        placeholder="Enter Description"
         autoComplete="off"
         value={project.description}
         onChange={handleChange}
@@ -118,7 +118,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         id="budget"
         name="budget"
         type="number"
-        placeholder="enter budget"
+        placeholder="Enter budget"
         autoComplete="off"
         value={project.budget}
         onChange={handleChange}
@@ -129,14 +129,16 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         </div>
       )}
 
-      <label htmlFor="isActive">Active?</label>
-      <input
-        id="isActive"
-        name="isActive"
-        type="checkbox"
-        checked={project.isActive}
-        onChange={handleChange}
-      />
+      <div className="checkbox-group">
+        <label htmlFor="isActive">Active?</label>
+        <input
+          id="isActive"
+          name="isActive"
+          type="checkbox" 
+          checked={project.isActive}
+          onChange={handleChange}
+        />
+      </div>
 
       <div className="input-group">
         <button className="primary bordered medium">Save</button>

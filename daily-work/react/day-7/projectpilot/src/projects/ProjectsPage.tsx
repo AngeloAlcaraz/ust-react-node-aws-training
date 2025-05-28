@@ -3,19 +3,24 @@ import { Project } from "./Project";
 import { useState, useEffect } from "react";
 import { ProjectAPI } from "./ProjectAPI";
 
-
 const PAGE_SIZE = 20;
 
 function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true); 
+    const [hasMore, setHasMore] = useState(true);
 
     const handleMoreClick = () => {
-        if (!loading && hasMore) {
+        const nextCount = visibleCount + PAGE_SIZE;
+
+        if (nextCount <= projects.length) {
+            setVisibleCount(nextCount);
+        } else {
             setCurrentPage((prev) => prev + 1);
+            setVisibleCount(nextCount);
         }
     };
 
@@ -54,22 +59,15 @@ function ProjectsPage() {
                 const data = await ProjectAPI.get(currentPage, PAGE_SIZE);
                 setError('');
 
-                // Si la API devuelve menos proyectos que PAGE_SIZE,
-                // significa que no hay más datos para cargar
                 if (data.length < PAGE_SIZE) {
                     setHasMore(false);
                 }
 
-                if (currentPage === 1) {
-                    setProjects(data);
-                } else {
-                    // Evitar duplicados si API regresa IDs iguales
-                    setProjects((prev) => {
-                        const existingIds = new Set(prev.map((p) => p._id));
-                        const newProjects = data.filter((p) => !existingIds.has(p._id));
-                        return [...prev, ...newProjects];
-                    });
-                }
+                setProjects((prev) => {
+                    const existingIds = new Set(prev.map((p) => p._id));
+                    const newProjects = data.filter((p) => !existingIds.has(p._id));
+                    return [...prev, ...newProjects];
+                });
             } catch (e) {
                 if (e instanceof Error) {
                     setError(e.message);
@@ -97,23 +95,22 @@ function ProjectsPage() {
             )}
 
             <ProjectList
-                projects={projects}
+                projects={projects.slice(0, visibleCount)}
                 onSave={saveProject}
                 onDelete={handleDelete}
             />
 
-            {!loading && !error && hasMore && (
+            {!loading && hasMore && visibleCount < projects.length && (
                 <div className="row">
                     <div className="col-sm-12">
-                        <div className="button-group fluid">
-                            <button
-                                className="button default"
-                                onClick={handleMoreClick}
-                                disabled={loading} // Evitar múltiples clics mientras carga
-                            >
-                                More...
-                            </button>
-                        </div>
+                        <button
+                            className="button default fluid"
+                            onClick={handleMoreClick}
+                            disabled={loading}
+                            style={{ width: '100%' }}
+                        >
+                            More...
+                        </button>
                     </div>
                 </div>
             )}

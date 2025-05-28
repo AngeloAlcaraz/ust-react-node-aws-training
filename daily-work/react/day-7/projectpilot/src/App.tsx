@@ -21,7 +21,7 @@ function App() {
           Projects
         </NavLink>
         <NavLink to="/projects/new" className="button rounded">
-          New Projects
+          New Project
         </NavLink>
       </header>
       <div className="container">
