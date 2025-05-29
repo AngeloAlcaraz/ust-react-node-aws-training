@@ -3,7 +3,9 @@ import { BrowserRouter, Route, Routes, NavLink } from "react-router";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
 import ProjectPage from './projects/ProjectPage';
-import NewProjectPage from "./projects/newProjectPage";
+import NewProjectPage from "./projects/NewProjectPage";
+
+
 
 function App() {
 
@@ -21,7 +23,7 @@ function App() {
           Projects
         </NavLink>
         <NavLink to="/projects/new" className="button rounded">
-          New Projects
+          New Project
         </NavLink>
       </header>
       <div className="container">

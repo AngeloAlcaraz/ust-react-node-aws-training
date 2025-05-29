@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProjectForm from "./ProjectForm";
 import { Project } from "./Project";
-import { projectAPI } from "./projectAPI";
+import { ProjectAPI } from "./ProjectAPI";
 import { useNavigate } from "react-router";
 
 const createEmptyProject = () => new Project({
@@ -18,7 +18,7 @@ function NewProjectPage() {
 
   const handleSave = async (savedProject: Project) => {
     try {      
-      const createdProject = await projectAPI.post(savedProject);
+      const createdProject = await ProjectAPI.post(savedProject);
 
       console.log(`Project saved successfully: ${createdProject.name}`);    
       navigate('/projects');
@@ -36,11 +36,13 @@ function NewProjectPage() {
   return (
     <div>
       <h2>Create New Project</h2>
-      <ProjectForm
-        project={project}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+      <div className="form-container">
+        <ProjectForm
+          project={project}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      </div>
     </div>
   );
 }

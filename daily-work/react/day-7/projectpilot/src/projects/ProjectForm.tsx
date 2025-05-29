@@ -1,5 +1,6 @@
 import { useState, useEffect, type SyntheticEvent } from "react";
 import { Project } from "./Project";
+import Swal from 'sweetalert2';
 
 interface ProjectFormProps {
   project: Project;
@@ -14,9 +15,8 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     description: '',
     budget: '',
   });
-  const [isSubmitted, setIsSubmitted] = useState(false); // Para mostrar errores solo después del primer submit
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Resetear estado cuando cambia el proyecto inicial
   useEffect(() => {
     setProject(initialProject);
     setErrors({ name: '', description: '', budget: '' });
@@ -52,10 +52,17 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     setErrors(validationErrors);
 
     if (!Object.values(validationErrors).every(e => e === '')) {
-      return; // Si hay errores, no continuar
+      return;
     }
 
     onSave(project);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Project Saved',
+      text: 'The project has been added successfully!',
+      confirmButtonText: 'OK',
+    });
   };
 
   const handleChange = (
@@ -76,7 +83,6 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     const updatedProject = new Project({ ...project, [name]: updatedValue });
     setProject(updatedProject);
 
-    // Validar en cada cambio solo si el usuario ya intentó enviar
     if (isSubmitted) {
       setErrors(validate(updatedProject));
     }
@@ -89,7 +95,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         id="name"
         name="name"
         type="text"
-        placeholder="enter name"
+        placeholder="Enter Name"
         autoComplete="off"
         value={project.name}
         onChange={handleChange}
@@ -104,7 +110,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
       <textarea
         id="description"
         name="description"
-        placeholder="enter description"
+        placeholder="Enter Description"
         autoComplete="off"
         value={project.description}
         onChange={handleChange}
@@ -120,7 +126,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         id="budget"
         name="budget"
         type="number"
-        placeholder="enter budget"
+        placeholder="Enter budget"
         autoComplete="off"
         value={project.budget}
         onChange={handleChange}
@@ -131,14 +137,16 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         </div>
       )}
 
-      <label htmlFor="isActive">Active?</label>
-      <input
-        id="isActive"
-        name="isActive"
-        type="checkbox"
-        checked={project.isActive}
-        onChange={handleChange}
-      />
+      <div className="checkbox-group">
+        <label htmlFor="isActive">Active?</label>
+        <input
+          id="isActive"
+          name="isActive"
+          type="checkbox"
+          checked={project.isActive}
+          onChange={handleChange}
+        />
+      </div>
 
       <div className="input-group">
         <button className="primary bordered medium">Save</button>

@@ -55,7 +55,7 @@ export class ProjectsController {
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error; // Dejar que NestJS maneje el 404
+        throw error;
       }
 
       console.error(`Error fetching project ${id}:`, error);

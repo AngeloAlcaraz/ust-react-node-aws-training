@@ -1,5 +1,6 @@
 @import '../node_modules/mini.css/dist/mini-default.min.css';
 
+
 form {
   min-width: 300px;
 }
@@ -24,4 +25,8 @@ header {
 
 a.button.active {
   border: 1px solid var(--fore-color);
+}
+
+.swal2-container {
+  z-index: 9999 !important;
 }

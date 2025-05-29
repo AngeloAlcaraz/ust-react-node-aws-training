@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { projectAPI } from './projectAPI';
+import { ProjectAPI } from './ProjectAPI';
 import ProjectDetail from './ProjectDetail';
 import { Project } from './Project';
 import { useParams } from 'react-router';
@@ -9,11 +9,12 @@ function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
-  const id = Number(params.id);
+  const id = params.id;
 
   useEffect(() => {
+    if (!id) return;
     setLoading(true);
-    projectAPI
+    ProjectAPI
       .find(id)
       .then((data) => {
         setProject(data);
@@ -49,7 +50,11 @@ function ProjectPage() {
           )}
         </div>
 
-        {project && <ProjectDetail project={project} />}
+        {project && (
+          <div className="center-content">
+            <ProjectDetail project={project} />
+          </div>
+        )}
       </>
     </div>
   );

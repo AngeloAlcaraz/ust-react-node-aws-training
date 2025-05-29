@@ -52,13 +52,17 @@ function convertToProjectModel(item: any): Project {
     return new Project(item);
 }
 
-const projectAPI = {
+const ProjectAPI = {
+    //Get all projects with pagination and sorting
     get(page = 1, limit = 20) {
         return fetch(`${url}?_page=${page}&_limit=${limit}&_sort=name`)
             .then(delay(600))
             .then(checkStatus)
             .then(parseJSON)
-            .then(result => convertToProjectModels(result.data))
+            .then(result => {
+                console.log('API response:', result);
+                return convertToProjectModels(result.data || result);
+            })
             .catch((error: TypeError) => {
                 console.log('log client error ' + error);
                 throw new Error(
@@ -67,43 +71,47 @@ const projectAPI = {
             });
     },
 
-    async put(project: Project) {
+    //Update a project
+    async put(project: Project): Promise<Project> {
         try {
-            const response = await fetch(`${url}/${project._id}`, {
+            const apiResponse = await fetch(`${url}/${project._id}`, {
                 method: 'PUT',
                 body: JSON.stringify(project),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            const response_1 = await checkStatus(response);
-            return parseJSON(response_1);
+
+            await checkStatus(apiResponse);
+            const updatedProjectData = await parseJSON(apiResponse);
+            return convertToProjectModel(updatedProjectData.data);
+
         } catch (error) {
             console.log('log client error ' + error);
-            throw new Error(
-                'There was an error updating the project. Please try again.'
-            );
+            throw new Error('There was an error updating the project. Please try again.');
         }
     },
 
+    //Find a project by ID
     async find(id: string) {
-        const response = await fetch(`${url}/${id}`);
-        const response_1 = await checkStatus(response);
-        const item = await parseJSON(response_1);
-        return convertToProjectModel(item);
+        const apiResponse = await fetch(`${url}/${id}`);
+        const responseData = await checkStatus(apiResponse);
+        const item = await parseJSON(responseData);
+        return convertToProjectModel(item.data);
     },
 
+    //Create a new project
     async post(project: Omit<Project, '_id'>) {
         try {
-            const response = await fetch(url, {
+            const apiResponse = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(project),
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-            const response_1 = await checkStatus(response);
-            const createdProject = await parseJSON(response_1);
+            const responseData = await checkStatus(apiResponse);
+            const createdProject = await parseJSON(responseData);
             return convertToProjectModel(createdProject);
         } catch (error) {
             console.log('log client error ' + error);
@@ -113,6 +121,20 @@ const projectAPI = {
         }
     },
 
+    //Delete a project by ID
+    async delete(id: string) {
+        console.log('Deleting project with ID:', id);
+        try {
+            const apiResponse = await fetch(`${url}/${id}`, {
+                method: 'DELETE',
+            });
+            const responseData = await checkStatus(apiResponse);
+            return parseJSON(responseData);
+        } catch (error) {
+            console.log('log client error ' + error);
+            throw new Error('There was an error deleting the project. Please try again.');
+        }
+    },
 };
 
-export { projectAPI };
+export { ProjectAPI };

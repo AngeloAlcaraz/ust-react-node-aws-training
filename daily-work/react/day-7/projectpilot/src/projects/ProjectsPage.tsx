@@ -1,45 +1,73 @@
 import ProjectList from './ProjectList';
 import { Project } from "./Project";
 import { useState, useEffect } from "react";
-import { projectAPI } from './projectAPI';
+import { ProjectAPI } from "./ProjectAPI";
+
+const PAGE_SIZE = 21;
 
 function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     const handleMoreClick = () => {
-        setCurrentPage((currentPage) => currentPage + 1);
+        const nextCount = visibleCount + PAGE_SIZE;
+
+        if (nextCount <= projects.length) {
+            setVisibleCount(nextCount);
+        } else {
+            setCurrentPage((prev) => prev + 1);
+            setVisibleCount(nextCount);
+        }
     };
 
-    const saveProject = (project: Project) => {
-        projectAPI
-            .put(project)
-            .then((updatedProject) => {
-                const updatedProjects = projects.map((p: Project) => {
-                    return p._id === project._id ? new Project(updatedProject) : p;
-                });
-                setProjects(updatedProjects);
-            })
-            .catch((e) => {
-                if (e instanceof Error) {
-                    setError(e.message);
-                }
-            });
+    const saveProject = async (project: Project): Promise<Project> => {
+        try {
+            const updatedProject = await ProjectAPI.put(project);
+            const updatedProjects = projects.map((p: Project) =>
+                p._id === project._id ? updatedProject : p
+            );
+            setProjects(updatedProjects);
+            return updatedProject;
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message);
+            }
+            throw e;
+        }
+    };
+
+    const handleDelete = async (projectId: string): Promise<void> => {
+        try {
+            await ProjectAPI.delete(projectId);
+            setProjects((prev) => prev.filter((p) => p._id !== projectId));
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message);
+            }
+            throw e;
+        }
     };
 
     useEffect(() => {
         async function loadProjects() {
             setLoading(true);
             try {
-                const data = await projectAPI.get(currentPage);
+                const data = await ProjectAPI.get(currentPage, PAGE_SIZE);
                 setError('');
-                if (currentPage === 1) {
-                    setProjects(data);
-                } else {
-                    setProjects((projects) => [...projects, ...data]);
+
+                if (data.length < PAGE_SIZE) {
+                    setHasMore(false);
                 }
+
+                setProjects((prev) => {
+                    const existingIds = new Set(prev.map((p) => p._id));
+                    const newProjects = data.filter((p) => !existingIds.has(p._id));
+                    return [...prev, ...newProjects];
+                });
             } catch (e) {
                 if (e instanceof Error) {
                     setError(e.message);
@@ -65,21 +93,28 @@ function ProjectsPage() {
                     </div>
                 </div>
             )}
+
             <ProjectList
+                projects={projects.slice(0, visibleCount)}
                 onSave={saveProject}
-                projects={projects}
+                onDelete={handleDelete}
             />
-            {!loading && !error && (
+
+            {!loading && hasMore && visibleCount < projects.length && (
                 <div className="row">
                     <div className="col-sm-12">
-                        <div className="button-group fluid">
-                            <button className="button default" onClick={handleMoreClick}>
-                                More...
-                            </button>
-                        </div>
+                        <button
+                            className="button default fluid"
+                            onClick={handleMoreClick}
+                            disabled={loading}
+                            style={{ width: '1030px' }}
+                        >
+                            More...
+                        </button>
                     </div>
                 </div>
             )}
+
             {loading && (
                 <div className="center-page">
                     <span className="spinner primary"></span>
@@ -87,7 +122,7 @@ function ProjectsPage() {
                 </div>
             )}
         </>
-    )
+    );
 }
 
 export default ProjectsPage;
