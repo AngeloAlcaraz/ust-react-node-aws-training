@@ -26,10 +26,9 @@ function NewProjectPage() {
       setProject(createEmptyProject());
     } catch (error) {
       console.error("Error creating project:", error);
-      throw error; // <-- IMPORTANTE: volver a lanzar el error
+      throw error;
     }
   };
-
 
   const handleCancel = () => {
     setProject(createEmptyProject());

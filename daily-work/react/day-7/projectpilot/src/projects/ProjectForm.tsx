@@ -82,8 +82,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel, externalErrors
         }
         setErrors(newErrors);
         return;
-      }
-      // Aquí podrías agregar manejo de error global si quieres.
+      }      
     }
   };
 
@@ -110,7 +109,6 @@ function ProjectForm({ project: initialProject, onSave, onCancel, externalErrors
     }
   };
 
-  // Combina errores locales + externos para mostrar
   const combinedErrors = {
     name: errors.name || externalErrors.name || '',
     description: errors.description || externalErrors.description || '',

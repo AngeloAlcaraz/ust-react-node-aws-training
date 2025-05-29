@@ -3,9 +3,7 @@ import { BrowserRouter, Route, Routes, NavLink } from "react-router";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
 import ProjectPage from './projects/ProjectPage';
-import NewProjectPage from "./projects/NewProjectPage";
-
-
+import NewProjectPage from "./projects/newProjectPage";
 
 function App() {
 
