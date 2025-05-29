@@ -13,20 +13,36 @@ function translateStatusToErrorMessage(status: number) {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function checkStatus(response: any) {
+async function checkStatus(response: Response) {
     if (response.ok) {
         return response;
     } else {
+        let errorBody = null;
+        try {
+            errorBody = await response.json();
+        } catch { /* empty */ }
+
         const httpErrorInfo = {
             status: response.status,
             statusText: response.statusText,
             url: response.url,
+            body: errorBody,
         };
         console.log(`log server http error: ${JSON.stringify(httpErrorInfo)}`);
 
-        const errorMessage = translateStatusToErrorMessage(httpErrorInfo.status);
-        throw new Error(errorMessage);
+        const errorMessage =
+            (errorBody && errorBody.message
+                ? Array.isArray(errorBody.message)
+                    ? errorBody.message.join('\n')
+                    : errorBody.message
+                : translateStatusToErrorMessage(httpErrorInfo.status)) || 'Unknown error';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const error = new Error(errorMessage) as any;
+        error.response = {
+            data: errorBody,
+        };
+        throw error;
     }
 }
 
@@ -73,10 +89,12 @@ const ProjectAPI = {
 
     //Update a project
     async put(project: Project): Promise<Project> {
-        try {
-            const apiResponse = await fetch(`${url}/${project._id}`, {
+        try {            
+            const { _id, ...dataWithoutId } = project;           
+
+            const apiResponse = await fetch(`${url}/${_id}`, {
                 method: 'PUT',
-                body: JSON.stringify(project),
+                body: JSON.stringify(dataWithoutId),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -87,8 +105,8 @@ const ProjectAPI = {
             return convertToProjectModel(updatedProjectData.data);
 
         } catch (error) {
-            console.log('log client error ' + error);
-            throw new Error('There was an error updating the project. Please try again.');
+            console.log('log client error:', error);
+            throw error;
         }
     },
 
@@ -103,21 +121,32 @@ const ProjectAPI = {
     //Create a new project
     async post(project: Omit<Project, '_id'>) {
         try {
+
+            // Temporary default image URL
+            if (!project.imageUrl) {
+                project.imageUrl = '/assets/placeimg_500_300_arch5.jpg';
+            }
+
             const apiResponse = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(project),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
-            const responseData = await checkStatus(apiResponse);
-            const createdProject = await parseJSON(responseData);
-            return convertToProjectModel(createdProject);
+
+            const responseBody = await apiResponse.json();
+
+            if (!apiResponse.ok) {
+                const error = new Error('Validation error');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (error as any).response = { data: responseBody };
+                throw error;
+            }
+
+            return convertToProjectModel(responseBody);
+
         } catch (error) {
-            console.log('log client error ' + error);
-            throw new Error(
-                'There was an error creating the project. Please try again.'
-            );
+            console.log('log client error:', error);
+            throw error;
         }
     },
 

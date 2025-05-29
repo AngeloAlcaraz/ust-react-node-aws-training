@@ -9,10 +9,13 @@ import {
   Param,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProjectsService } from '../service/projects.service';
 import { Project } from '../schema/project.schema';
 import { CreateProjectDto } from '../dto/create-project.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -93,10 +96,17 @@ export class ProjectsController {
     }
   }
 
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   @Put(':id')
   async updateProject(
     @Param('id') id: string,
-    @Body() updateDto: Partial<CreateProjectDto>,
+    @Body() updateDto: UpdateProjectDto,
   ): Promise<{ message: string; data: Project }> {
     try {
       const data = await this.projectsService.updateProject(id, updateDto);

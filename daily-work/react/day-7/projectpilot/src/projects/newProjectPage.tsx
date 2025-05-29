@@ -17,20 +17,22 @@ function NewProjectPage() {
   const navigate = useNavigate();
 
   const handleSave = async (savedProject: Project) => {
-    try {      
+    try {
       const createdProject = await ProjectAPI.post(savedProject);
 
-      console.log(`Project saved successfully: ${createdProject.name}`);    
+      console.log(`Project saved successfully: ${createdProject.name}`);
       navigate('/projects');
-      
+
       setProject(createEmptyProject());
     } catch (error) {
-      console.error("Error creating project:", error);     
+      console.error("Error creating project:", error);
+      throw error; // <-- IMPORTANTE: volver a lanzar el error
     }
   };
 
+
   const handleCancel = () => {
-    setProject(createEmptyProject());   
+    setProject(createEmptyProject());
   };
 
   return (
