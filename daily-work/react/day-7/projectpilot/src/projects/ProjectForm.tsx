@@ -4,11 +4,12 @@ import Swal from 'sweetalert2';
 
 interface ProjectFormProps {
   project: Project;
-  onSave: (project: Project) => void;
+  onSave: (project: Project) => Promise<void>;
   onCancel: () => void;
+  externalErrors?: { name?: string; description?: string; budget?: string };
 }
 
-function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormProps) {
+function ProjectForm({ project: initialProject, onSave, onCancel, externalErrors = {} }: ProjectFormProps) {
   const [project, setProject] = useState(initialProject);
   const [errors, setErrors] = useState({
     name: '',
@@ -26,24 +27,24 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
   const validate = (project: Project) => {
     const errors = { name: '', description: '', budget: '' };
 
-    if (project.name.length === 0) {
+    if (project.name.trim().length === 0) {
       errors.name = 'Name is required';
-    } else if (project.name.length < 3) {
+    } else if (project.name.trim().length < 3) {
       errors.name = 'Name needs to be at least 3 characters.';
     }
 
-    if (project.description.length === 0) {
+    if (project.description.trim().length === 0) {
       errors.description = 'Description is required.';
     }
 
-    if (project.budget === 0) {
+    if (project.budget === 0 || isNaN(project.budget)) {
       errors.budget = 'Budget must be more than $0.';
     }
 
     return errors;
   };
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
     setIsSubmitted(true);
@@ -55,14 +56,34 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
       return;
     }
 
-    onSave(project);
+    try {
+      await onSave(project);
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Project Saved',
-      text: 'The project has been added successfully!',
-      confirmButtonText: 'OK',
-    });
+      const isUpdate = !!project._id;
+
+      await Swal.fire({
+        icon: 'success',
+        title: isUpdate ? 'Project Updated' : 'Project Saved',
+        text: isUpdate
+          ? 'The project has been updated successfully!'
+          : 'The project has been added successfully!',
+        confirmButtonText: 'OK',
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response?.data?.message && Array.isArray(error.response.data.message)) {
+        const serverErrors: string[] = error.response.data.message;
+
+        const newErrors = { name: '', description: '', budget: '' };
+        for (const msg of serverErrors) {
+          if (msg.toLowerCase().includes('name')) newErrors.name = msg;
+          if (msg.toLowerCase().includes('description')) newErrors.description = msg;
+          if (msg.toLowerCase().includes('budget')) newErrors.budget = msg;
+        }
+        setErrors(newErrors);
+        return;
+      }      
+    }
   };
 
   const handleChange = (
@@ -88,8 +109,14 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
     }
   };
 
+  const combinedErrors = {
+    name: errors.name || externalErrors.name || '',
+    description: errors.description || externalErrors.description || '',
+    budget: errors.budget || externalErrors.budget || '',
+  };
+
   return (
-    <form className="input-group vertical" onSubmit={handleSubmit}>
+    <form className="input-group vertical" onSubmit={handleSubmit} noValidate>
       <label htmlFor="name">Project Name</label>
       <input
         id="name"
@@ -100,9 +127,9 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         value={project.name}
         onChange={handleChange}
       />
-      {isSubmitted && errors.name && (
+      {isSubmitted && combinedErrors.name && (
         <div className="card error">
-          <p>{errors.name}</p>
+          <p>{combinedErrors.name}</p>
         </div>
       )}
 
@@ -115,9 +142,9 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         value={project.description}
         onChange={handleChange}
       />
-      {isSubmitted && errors.description && (
+      {isSubmitted && combinedErrors.description && (
         <div className="card error">
-          <p>{errors.description}</p>
+          <p>{combinedErrors.description}</p>
         </div>
       )}
 
@@ -131,9 +158,9 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
         value={project.budget}
         onChange={handleChange}
       />
-      {isSubmitted && errors.budget && (
+      {isSubmitted && combinedErrors.budget && (
         <div className="card error">
-          <p>{errors.budget}</p>
+          <p>{combinedErrors.budget}</p>
         </div>
       )}
 
@@ -149,7 +176,7 @@ function ProjectForm({ project: initialProject, onSave, onCancel }: ProjectFormP
       </div>
 
       <div className="input-group">
-        <button className="primary bordered medium">Save</button>
+        <button className="primary bordered medium" type="submit">Save</button>
         <span></span>
         <button type="button" className="bordered medium" onClick={onCancel}>
           Cancel

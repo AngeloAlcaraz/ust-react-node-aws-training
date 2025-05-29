@@ -12,8 +12,11 @@ function ProjectsPage() {
     const [error, setError] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    
 
     const handleMoreClick = () => {
+        if (loading) return;  // Evita carga múltiple
+
         const nextCount = visibleCount + PAGE_SIZE;
 
         if (nextCount <= projects.length) {
@@ -31,8 +34,13 @@ function ProjectsPage() {
                 p._id === project._id ? updatedProject : p
             );
             setProjects(updatedProjects);
+            setError(''); 
             return updatedProject;
-        } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {           
+            if (e.response?.data?.message && Array.isArray(e.response.data.message)) {               
+                throw e;
+            }           
             if (e instanceof Error) {
                 setError(e.message);
             }
@@ -77,6 +85,14 @@ function ProjectsPage() {
             }
         }
         loadProjects();
+    }, [currentPage]);
+
+    // Opcional: Resetear visibleCount y hasMore si currentPage cambia a 1 (en caso de reset)
+    useEffect(() => {
+        if (currentPage === 1) {
+            setVisibleCount(PAGE_SIZE);
+            setHasMore(true);
+        }
     }, [currentPage]);
 
     return (

@@ -10,22 +10,24 @@ import {
   IsInt,
   IsDateString,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateProjectDto {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   @Matches(/^[a-zA-Z0-9 ]+$/, {
-    message: 'name can only contain letters, numbers, and spaces',
+    message: 'Name can only contain letters, numbers, and spaces',
   })
   name: string;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   @MaxLength(500)
-  @Matches(/^[a-zA-Z0-9 ]+$/, {
-    message: 'name can only contain letters, numbers, and spaces',
-  })
   description: string;
 
   @IsOptional()

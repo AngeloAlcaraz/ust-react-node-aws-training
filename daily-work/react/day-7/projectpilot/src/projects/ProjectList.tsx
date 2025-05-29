@@ -4,7 +4,6 @@ import ProjectCard from './ProjectCard';
 import ProjectForm from './ProjectForm';
 import Swal from 'sweetalert2';
 
-
 interface ProjectListProps {
   projects: Project[];
   onSave: (project: Project) => void;
@@ -23,26 +22,16 @@ function ProjectList({ projects, onSave, onDelete }: ProjectListProps) {
   };
 
   const handleSaveLocal = async (project: Project) => {
-    try {
-      const isUpdate = !!projectBeingEdited?._id;
+    const isUpdate = !!projectBeingEdited?._id;
+    await onSave(project);
+    setProjectBeingEdited(null);
 
-      await onSave(project);
-      setProjectBeingEdited(null);
-
-      Swal.fire({
-        icon: 'success',
-        title: isUpdate ? 'Project Updated' : 'Project Saved',
-        text: `The project has been ${isUpdate ? 'updated' : 'created'} successfully!`,
-        confirmButtonText: 'OK',
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Could not save the project. Please try again.',
-      });
-      console.error(error);
-    }
+    Swal.fire({
+      icon: 'success',
+      title: isUpdate ? 'Project Updated' : 'Project Saved',
+      text: `The project has been ${isUpdate ? 'updated' : 'created'} successfully!`,
+      confirmButtonText: 'OK',
+    });
   };
 
   const handleDelete = async (projectId: string) => {
