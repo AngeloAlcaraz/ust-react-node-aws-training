@@ -30,3 +30,45 @@ a.button.active {
 .swal2-container {
   z-index: 9999 !important;
 }
+
+.header-bar {
+  padding: 0.5rem;
+}
+
+.header-content {
+  display: ruby-text;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap; 
+}
+
+.search-input {
+  background-size: 16px 16px;
+  padding-left: 30px; 
+  border: 0.1px solid black;
+  border-radius: 6px;
+  height: 2rem;
+}
+
+.searchbar-form {
+  display: flex;
+  align-items: center;
+  border: 0.1px solid black;
+  border-radius: 3px;
+  padding: 6px;
+  padding-top: 8px;
+  max-width: 300px;
+  height: 41px;
+}
+
+.searchbar-form .icon-search {
+  margin-right: 8px; 
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  background-color: transparent;
+  font-size: 14px;
+}
