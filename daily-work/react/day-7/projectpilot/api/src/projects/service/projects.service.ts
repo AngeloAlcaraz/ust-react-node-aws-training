@@ -1,4 +1,3 @@
-// src/projects/projects.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -8,7 +7,10 @@ import { UpdateProjectDto } from '../dto/update-project.dto';
 
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectModel('Project') private projectModel: Model<IProject>) {}
+  constructor(
+    @InjectModel('Project', 'projectsConnection')
+    private projectModel: Model<IProject>,
+  ) {}
 
   async getAllProjects(): Promise<IProject[]> {
     const projectsData = await this.projectModel.find();

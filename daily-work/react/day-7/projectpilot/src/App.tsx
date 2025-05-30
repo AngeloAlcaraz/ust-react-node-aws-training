@@ -1,18 +1,15 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes, NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
 import ProjectPage from './projects/ProjectPage';
-import NewProjectPage from "./projects/newProjectPage";
-import { useState } from "react";
+import NewProjectPage from "./projects/NewProjectPage";
+import SearchBar from "./projects/SearchBar";
+import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
-  const location = useLocation();
-
-  // Solo habilita el search si estás exactamente en /projects
-  const isSearchEnabled = location.pathname === "/projects";
-
+  
   return (
     <>
       <header className="sticky header-bar">
@@ -30,17 +27,10 @@ function App() {
           <NavLink to="/projects/new" className="button rounded" style={{ marginRight: '2rem' }} end>
             New Project
           </NavLink>
-          <div className={`searchbar-form ${!isSearchEnabled ? 'disabled' : ''}`}>
-            <span className="icon-search"></span>
-            <input
-              type="text"
-              placeholder="SEARCH A PROJECT..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              disabled={!isSearchEnabled}
-            />
-          </div>
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}           
+          />
         </div>
       </header>
       <div className="container">
