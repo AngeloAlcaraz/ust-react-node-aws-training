@@ -1,6 +1,5 @@
 @import '../node_modules/mini.css/dist/mini-default.min.css';
 
-
 form {
   min-width: 300px;
 }
@@ -29,4 +28,78 @@ a.button.active {
 
 .swal2-container {
   z-index: 9999 !important;
+}
+
+.header-bar {
+  padding: 0.5rem;
+}
+
+.header-content {
+  display: ruby-text;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  background-size: 16px 16px;
+  padding-left: 30px;
+  border: none;
+  border-radius: 6px;
+  height: 2rem;
+  outline: none;
+  flex: 1;
+  background-color: transparent;
+  font-size: 14px;
+}
+
+.searchbar-form {
+  display: flex;
+  align-items: center;
+  border: 0.1px solid black;
+  border-radius: 3px;
+  padding: 6px;
+  padding-top: 8px;
+  max-width: 300px;
+  height: 41px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.searchbar-form .icon-search {
+  margin-right: 8px;
+}
+
+.searchbar-form.disabled {
+  border-color: #ccc;
+  cursor: not-allowed;
+  background-color: #fafafa;
+}
+
+.searchbar-form.disabled .icon-search {
+  color: #ccc;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.searchbar-form.disabled .search-input {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  border: none;
+}
+
+.searchbar-form.disabled .search-input::placeholder {
+  color: #bbb;
+}
+
+.search-input:disabled {
+  background-color: transparent !important;
+  color: #999 !important;
+  cursor: not-allowed !important;
+  border: none !important;
+}
+
+.search-input:disabled::placeholder {
+  color: #bbb !important;
 }

@@ -1,17 +1,33 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProjectSchema } from './projects/schema/project.schema';
-import { ProjectsController } from './projects/controller/projects.controller';
-import { ProjectsService } from './projects/service/projects.service';
+import { ProjectsModule } from './projects/modules/projects.module';
+// import { UsersModule } from './users/modules/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'projectsdb',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
     }),
-    MongooseModule.forFeature([{ name: 'Project', schema: ProjectSchema }]),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017',
+      {
+        connectionName: 'projectsConnection',
+        dbName: process.env.PROJECTS_DB_NAME || 'projectsdb',
+      },
+    ),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017',
+      {
+        connectionName: 'usersConnection',
+        dbName: process.env.USERS_DB_NAME || 'nest',
+      },
+    ),
+    ProjectsModule,
+    // UsersModule,
   ],
-  controllers: [ProjectsController],
-  providers: [ProjectsService],
 })
 export class AppModule {}

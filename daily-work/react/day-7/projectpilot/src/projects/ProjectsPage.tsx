@@ -5,17 +5,20 @@ import { ProjectAPI } from "./ProjectAPI";
 
 const PAGE_SIZE = 21;
 
-function ProjectsPage() {
+type ProjectsPageProps = {
+    searchTerm: string;
+};
+
+function ProjectsPage({ searchTerm }: ProjectsPageProps) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    
 
     const handleMoreClick = () => {
-        if (loading) return;  // Evita carga múltiple
+        if (loading) return;
 
         const nextCount = visibleCount + PAGE_SIZE;
 
@@ -34,13 +37,13 @@ function ProjectsPage() {
                 p._id === project._id ? updatedProject : p
             );
             setProjects(updatedProjects);
-            setError(''); 
+            setError('');
             return updatedProject;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (e: any) {           
-            if (e.response?.data?.message && Array.isArray(e.response.data.message)) {               
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
+            if (e.response?.data?.message && Array.isArray(e.response.data.message)) {
                 throw e;
-            }           
+            }
             if (e instanceof Error) {
                 setError(e.message);
             }
@@ -87,13 +90,28 @@ function ProjectsPage() {
         loadProjects();
     }, [currentPage]);
 
-    // Opcional: Resetear visibleCount y hasMore si currentPage cambia a 1 (en caso de reset)
     useEffect(() => {
         if (currentPage === 1) {
             setVisibleCount(PAGE_SIZE);
             setHasMore(true);
         }
     }, [currentPage]);
+
+    // 🔍 Filtrado de proyectos por nombre (insensible a mayúsculas)
+    const filteredProjects = projects.filter((project) => {
+        const term = searchTerm.toLowerCase();
+
+        const nameMatch = project.name?.toLowerCase().includes(term);
+        const descriptionMatch = project.description?.toLowerCase().includes(term);
+        const budgetMatch = project.budget?.toString().includes(term);
+
+        return nameMatch || descriptionMatch || budgetMatch;
+    });
+
+    // Si hay búsqueda activa, ignorar paginación
+    const projectsToDisplay = searchTerm
+        ? filteredProjects
+        : filteredProjects.slice(0, visibleCount);
 
     return (
         <>
@@ -111,12 +129,12 @@ function ProjectsPage() {
             )}
 
             <ProjectList
-                projects={projects.slice(0, visibleCount)}
+                projects={projectsToDisplay}
                 onSave={saveProject}
                 onDelete={handleDelete}
             />
 
-            {!loading && hasMore && visibleCount < projects.length && (
+            {!loading && hasMore && !searchTerm && visibleCount < filteredProjects.length && (
                 <div className="row">
                     <div className="col-sm-12">
                         <button
