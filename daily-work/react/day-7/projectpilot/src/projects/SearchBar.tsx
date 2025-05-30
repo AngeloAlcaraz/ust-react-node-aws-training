@@ -1,24 +1,24 @@
 import { useLocation } from "react-router-dom";
 
 interface SearchBarProps {
-  searchTerm: string;
-  onSearchTermChange: (term: string) => void;
+  searchText: string;
+  onSearchTextChange: (term: string) => void;
 }
 
-function SearchBar({ searchTerm, onSearchTermChange }: SearchBarProps) {
+function SearchBar({ searchText, onSearchTextChange }: SearchBarProps) {
   const location = useLocation();
-  const enabled = location.pathname === "/projects";
+  const isProjectPath = location.pathname === "/projects";
 
   return (
-    <div className={`searchbar-form ${!enabled ? 'disabled' : ''}`}>
+    <div className={`searchbar-form ${!isProjectPath ? 'disabled' : ''}`}>
       <span className="icon-search"></span>
       <input
         type="text"
         placeholder="SEARCH A PROJECT..."
         className="search-input"
-        value={searchTerm}
-        onChange={(e) => onSearchTermChange(e.target.value)}
-        disabled={!enabled}
+        value={searchText}
+        onChange={(e) => onSearchTextChange(e.target.value)}
+        disabled={!isProjectPath}
       />
     </div>
   );

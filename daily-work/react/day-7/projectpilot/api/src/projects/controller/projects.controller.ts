@@ -13,9 +13,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ProjectsService } from '../service/projects.service';
-import { Project } from '../schema/project.schema';
-import { CreateProjectDto } from '../dto/create-project.dto';
-import { UpdateProjectDto } from '../dto/update-project.dto';
+import { Project } from '../schemas/project.schema';
+import { CreateProjectDto } from '../dtos/create-project.dto';
+import { UpdateProjectDto } from '../dtos/update-project.dto';
 
 @Controller('projects')
 export class ProjectsController {

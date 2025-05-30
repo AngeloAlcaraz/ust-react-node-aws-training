@@ -1,15 +1,15 @@
 import ProjectList from './ProjectList';
 import { Project } from "./Project";
 import { useState, useEffect } from "react";
-import { ProjectAPI } from "./ProjectAPI";
+import { ProjectAPI } from "./projectAPI";
 
 const PAGE_SIZE = 21;
 
 type ProjectsPageProps = {
-    searchTerm: string;
+    searchText: string;
 };
 
-function ProjectsPage({ searchTerm }: ProjectsPageProps) {
+function ProjectsPage({ searchText }: ProjectsPageProps) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
     const [loading, setLoading] = useState(false);
@@ -97,19 +97,20 @@ function ProjectsPage({ searchTerm }: ProjectsPageProps) {
         }
     }, [currentPage]);
 
-    // 🔍 Filtrado de proyectos por nombre (insensible a mayúsculas)
     const filteredProjects = projects.filter((project) => {
-        const term = searchTerm.toLowerCase();
+        const typedText = searchText.toLowerCase();
 
-        const nameMatch = project.name?.toLowerCase().includes(term);
-        const descriptionMatch = project.description?.toLowerCase().includes(term);
-        const budgetMatch = project.budget?.toString().includes(term);
+        const nameMatch = project.name?.toLowerCase().includes(typedText);
+        const descriptionMatch = project.description?.toLowerCase().includes(typedText);
+        const budgetMatch = project.budget?.toString().includes(typedText);
 
         return nameMatch || descriptionMatch || budgetMatch;
     });
 
-    // Si hay búsqueda activa, ignorar paginación
-    const projectsToDisplay = searchTerm
+    const errorMessage = searchText && filteredProjects.length === 0
+        ? `No projects found for "${searchText}"`
+        : undefined;
+    const projectsToDisplay = searchText
         ? filteredProjects
         : filteredProjects.slice(0, visibleCount);
 
@@ -119,9 +120,20 @@ function ProjectsPage({ searchTerm }: ProjectsPageProps) {
                 <div className="row">
                     <div className="card large error">
                         <section>
-                            <p>
-                                <span className="icon-alert inverse "></span>
+                            <p>                               
                                 {error}
+                            </p>
+                        </section>
+                    </div>
+                </div>
+            )}
+            {errorMessage && (
+                <div className="row">
+                    <div className="card message-large">
+                        <section>
+                            <p>
+                                <span className="icon icon-alert"></span>
+                                {errorMessage}
                             </p>
                         </section>
                     </div>
@@ -134,7 +146,7 @@ function ProjectsPage({ searchTerm }: ProjectsPageProps) {
                 onDelete={handleDelete}
             />
 
-            {!loading && hasMore && !searchTerm && visibleCount < filteredProjects.length && (
+            {!loading && hasMore && !searchText && visibleCount < filteredProjects.length && (
                 <div className="row">
                     <div className="col-sm-12">
                         <button
