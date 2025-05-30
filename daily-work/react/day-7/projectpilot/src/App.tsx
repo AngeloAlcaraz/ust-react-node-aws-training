@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes, NavLink } from "react-router";
+import { BrowserRouter, Route, Routes, NavLink, useLocation } from "react-router-dom";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
 import ProjectPage from './projects/ProjectPage';
@@ -8,8 +8,13 @@ import { useState } from "react";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
+
+  // Solo habilita el search si estás exactamente en /projects
+  const isSearchEnabled = location.pathname === "/projects";
+
   return (
-    <BrowserRouter>
+    <>
       <header className="sticky header-bar">
         <div className="header-content">
           <span className="logo">
@@ -25,7 +30,7 @@ function App() {
           <NavLink to="/projects/new" className="button rounded" style={{ marginRight: '2rem' }} end>
             New Project
           </NavLink>
-          <div className="searchbar-form">
+          <div className={`searchbar-form ${!isSearchEnabled ? 'disabled' : ''}`}>
             <span className="icon-search"></span>
             <input
               type="text"
@@ -33,6 +38,7 @@ function App() {
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              disabled={!isSearchEnabled}
             />
           </div>
         </div>
@@ -45,8 +51,15 @@ function App() {
           <Route path="/projects/new" element={<NewProjectPage />} />
         </Routes>
       </div>
+    </>
+  );
+}
+
+export default function AppWrapper() {
+  // Este wrapper asegura que useLocation funcione dentro de App
+  return (
+    <BrowserRouter>
+      <App />
     </BrowserRouter>
   );
-};
-
-export default App;
+}
