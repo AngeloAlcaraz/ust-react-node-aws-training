@@ -1,7 +1,7 @@
 import ProjectList from './ProjectList';
 import { Project } from '../../models/Project';
 import { useState, useEffect } from "react";
-import { ProjectAPI } from '../../services/projectAPI';
+import { ProjectAPI } from '../../services/project-service';
 
 const PAGE_SIZE = 21;
 

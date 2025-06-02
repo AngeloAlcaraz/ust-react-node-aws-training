@@ -1,9 +1,9 @@
 import "./App.css";
 import { useState } from "react";
-import HomePage from "./components/home/HomePage";
+import HomePage from "./components/home/home-component";
 import ProjectsPage from "./components/projects/ProjectsPage";
 import ProjectPage from './components/projects/ProjectPage';
-import NewProjectPage from "./components/projects/newProjectPage";
+import NewProjectPage from "./components/projects/add-new-project.component";
 import SearchBar from "./components/projects/SearchBar";
 import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
 
