@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProjectForm from "./ProjectForm";
-import { Project } from "./Project";
-import { ProjectAPI } from "./ProjectAPI";
+import { Project } from "../../models/Project";
+import { ProjectAPI } from "../../services/projectAPI"
 import { useNavigate } from "react-router";
 
 const createEmptyProject = () => new Project({

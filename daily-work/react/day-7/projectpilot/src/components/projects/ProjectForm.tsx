@@ -1,5 +1,5 @@
 import { useState, useEffect, type SyntheticEvent } from "react";
-import { Project } from "./Project";
+import { Project } from "../../models/Project";
 import Swal from 'sweetalert2';
 
 interface ProjectFormProps {

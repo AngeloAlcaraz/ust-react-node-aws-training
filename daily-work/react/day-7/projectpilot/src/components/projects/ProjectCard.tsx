@@ -1,4 +1,4 @@
-import { Project } from './Project';
+import { Project } from '../../models/Project';
 import { Link } from 'react-router';
 
 import Swal from 'sweetalert2';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Project } from './Project';
+import { Project } from '../../models/Project';
 import ProjectCard from './ProjectCard';
 import ProjectForm from './ProjectForm';
 import Swal from 'sweetalert2';

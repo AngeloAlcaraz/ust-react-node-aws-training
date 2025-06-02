@@ -1,4 +1,4 @@
-import { Project } from './Project';
+import { Project } from '../models/Project';
 const baseUrl = 'http://localhost:3000';
 const url = `${baseUrl}/projects`;
 
