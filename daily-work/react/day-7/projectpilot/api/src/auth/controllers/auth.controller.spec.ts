@@ -3,19 +3,20 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccessTokenGuard } from '../common/gaurds/gaurd.access_token';
-import { RefreshTokenGuard } from '../common/gaurds/gaurd.refresh_token';
-import { UsersModule } from '../modules/users.module';
+import { AccessTokenGuard } from '../../common/gaurds/gaurd.access_token';
+import { RefreshTokenGuard } from '../../common/gaurds/gaurd.refresh_token';
+import { UsersModule } from '../../users/modules/users.module';
 import { AuthDtoStub } from '../tests/stubs/auth.dto.stub';
-import { CreateUserDtoStub } from '../tests/stubs/create_user.dto.stub';
+import { CreateUserDtoStub } from '../../users/tests/stubs/create_user.dto.stub';
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '../tests/utils/mongo/mongo_in_memory';
+} from '../../users/tests/utils/mongo/mongo_in_memory';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { AccessTokenStrategy } from './strategies/accessToken.strategy';
-import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { AuthService } from '../service/auth.service';
+import { AccessTokenStrategy } from '../strategies/accessToken.strategy';
+import { RefreshTokenStrategy } from '../strategies/refreshToken.strategy';
+import { from } from 'rxjs';
 describe('AuthController', () => {
   let authController: AuthController;
   let authService: AuthService;

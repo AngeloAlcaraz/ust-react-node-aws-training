@@ -3,7 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectsModule } from './projects/modules/projects.module';
-import { UsersModule } from './users/modules/users.module'; // Uncomment if UsersModule is implemented
+import { UsersModule } from './users/modules/users.module';
+import { AuthModule } from './auth/modules/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/modules/users.module'; // Uncomment if User
     ),
     ProjectsModule,
     UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

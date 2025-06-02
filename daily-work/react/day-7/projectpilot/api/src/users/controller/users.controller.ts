@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { AccessTokenGuard } from '../common/gaurds/gaurd.access_token';
+import { AccessTokenGuard } from '../../common/gaurds/gaurd.access_token';
 import { CreateUserDto } from '../dtos/create_user.dto';
 import { UpdateUserDto } from '../dtos/update_user.dto';
 import { User } from '../schemas/user.schema';
@@ -26,7 +26,7 @@ export class UsersController {
 
   @Get()
   async findAll(): Promise<User[]> {
-    return (await this.usersService.findAll()).map((x) => new User(x));
+    return (await this.usersService.findAll()).map((user) => new User(user));
   }
 
   @Get(':id')
