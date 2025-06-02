@@ -3,11 +3,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectsModule } from './projects/modules/projects.module';
-// import { UsersModule } from './users/modules/users.module';
+import { UsersModule } from './users/modules/users.module';
+import { AuthModule } from './auth/modules/auth.module';
 
 @Module({
   imports: [
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -27,7 +27,8 @@ import { ProjectsModule } from './projects/modules/projects.module';
       },
     ),
     ProjectsModule,
-    // UsersModule,
+    UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

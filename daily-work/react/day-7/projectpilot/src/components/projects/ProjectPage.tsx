@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ProjectAPI } from './ProjectAPI';
+import { ProjectAPI } from '../../services/project-service';
 import ProjectDetail from './ProjectDetail';
-import { Project } from './Project';
+import { Project } from '../../models/Project';
 import { useParams } from 'react-router';
 
 function ProjectPage() {
