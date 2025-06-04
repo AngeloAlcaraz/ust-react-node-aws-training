@@ -10,9 +10,11 @@ import {
   IsInt,
   IsDateString,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Expose, Exclude } from 'class-transformer';
 
+@Exclude()
 export class CreateProjectDto {
+  @Expose()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
@@ -23,6 +25,7 @@ export class CreateProjectDto {
   })
   name: string;
 
+  @Expose()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
@@ -30,23 +33,28 @@ export class CreateProjectDto {
   @MaxLength(500)
   description: string;
 
+  @Expose()
   @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @Expose()
   @IsOptional()
   @IsInt()
   @Min(1)
   contractTypeId?: number;
 
+  @Expose()
   @IsOptional()
   @IsDateString()
   contractSignedOn?: string;
 
+  @Expose()
   @IsNumber()
   @Min(0)
   budget: number;
 
+  @Expose()
   @IsBoolean()
   isActive: boolean;
 }
