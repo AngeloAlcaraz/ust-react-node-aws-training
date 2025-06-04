@@ -1,11 +1,10 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import React from "react";
-import type { Location, NavigateFunction } from "react-router-dom";
 
 export interface RouterProps {
-  location: Location;
-  navigate: NavigateFunction;
-  params: Record<string, string | undefined>;
+  location: ReturnType<typeof useLocation>;
+  navigate: ReturnType<typeof useNavigate>;
+  params: ReturnType<typeof useParams>;
 }
 
 export const withRouter = <P extends object>(

@@ -5,13 +5,13 @@ import ProjectsPage from "./components/projects/ProjectsPage";
 import ProjectPage from './components/projects/ProjectPage';
 import NewProjectPage from "./components/projects/newProjectPage";
 import SearchBar from "./components/projects/SearchBar";
-import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
+import { Route, Routes, NavLink } from "react-router-dom";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   return (
-   <BrowserRouter>
+    <>
       <header className="sticky header-bar">
         <div className="header-content">
           <span className="logo">
@@ -37,11 +37,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<ProjectsPage searchText={searchTerm} />} />
-          <Route path="/projects/:id" element={<ProjectPage />} />
           <Route path="/projects/new" element={<NewProjectPage />} />
+          <Route path="/projects/:id" element={<ProjectPage />} />
         </Routes>
       </div>
-   </BrowserRouter>
+    </>
   );
 }
 
