@@ -6,7 +6,7 @@ const eventBus = {
     document.addEventListener(event, listener);
     return listener;
   },
-  dispatch(event: string, data: unknown) {
+  dispatch(event: string, data?: unknown) {
     document.dispatchEvent(new CustomEvent(event, { detail: data }));
   },
   remove(event: string, listener: EventListenerOrEventListenerObject) {

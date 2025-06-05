@@ -4,12 +4,17 @@ interface User {
 }
 
 export default function authHeader(): Record<string, string> {
-  const userStr = localStorage.getItem('user');
-  const user: User | null = userStr ? JSON.parse(userStr) : null;
+  try {
+    const userStr = localStorage.getItem("user");
+    if (!userStr) return {};
 
-  if (user?.accessToken) {    
-    return { Authorization: 'Bearer ' + user.accessToken  }; 
-  } else {
-    return {};
+    const user: User = JSON.parse(userStr);
+    if (user?.accessToken) {
+      return { Authorization: `Bearer ${user.accessToken}` };
+    }
+  } catch (error) {
+    console.error("Failed to parse user from localStorage", error);
   }
+
+  return {};
 }

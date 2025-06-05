@@ -10,26 +10,40 @@ interface User {
 }
 
 class AuthService {
-  login(username: string, password: string): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      axios
-        .post<User>(`${API_URL}signin`, { username, password })
-        .then((response) => {
-          if (response.data.accessToken) {
-            localStorage.setItem("user", JSON.stringify(response.data));
-          }
-          resolve(response.data);
-        })
-        .catch(reject);
-    });
+  async login(username: string, password: string): Promise<User> {
+    try {
+      const response = await axios.post<User>(`${API_URL}signin`, { username, password });
+      if (response.data.accessToken) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Login failed. Please try again.";
+      throw new Error(message);
+    }
   }
 
   logout(): void {
     localStorage.removeItem("user");
   }
 
-  async register(username: string, email: string, password: string): Promise<void> {
-    await axios.post(`${API_URL}signup`, { username, email, password });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async register(username: string, email: string, password: string): Promise<any> {
+    try {
+      const response = await axios.post(`${API_URL}signup`, { username, email, password });
+      return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed. Please try again.";
+      throw new Error(message);
+    }
   }
 
   getCurrentUser(): User | null {

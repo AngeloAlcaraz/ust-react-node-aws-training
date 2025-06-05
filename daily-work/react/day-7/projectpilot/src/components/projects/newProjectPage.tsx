@@ -1,8 +1,8 @@
 import { useState } from "react";
 import ProjectForm from "./ProjectForm";
 import { Project } from "../../models/Project";
-import { ProjectAPI } from "../../services/projectAPI"
-import { useNavigate } from "react-router";
+import { ProjectAPI } from "../../services/project-service";
+import { useNavigate } from "react-router-dom";
 
 const createEmptyProject = () => new Project({
   id: 0,
