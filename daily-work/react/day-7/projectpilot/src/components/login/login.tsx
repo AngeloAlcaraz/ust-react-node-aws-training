@@ -112,7 +112,7 @@ export default function Login() {
                   className="input-group-text password-toggle"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  style={{ position: "absolute", top: "23px", left: "223px", cursor: "pointer" }}
+                  style={{ position: "absolute", top: "23px", left: "244px", cursor: "pointer" }}
                 >
                   <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
                 </button>
