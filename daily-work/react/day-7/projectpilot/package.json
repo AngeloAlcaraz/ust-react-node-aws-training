@@ -17,6 +17,7 @@
     "@mui/material": "^7.1.0",
     "axios": "^1.9.0",
     "json-server": "^0.16.2",
+    "mdb-ui-kit": "^9.0.0",
     "mini.css": "^3.0.1",
     "prop-types": "^15.8.1",
     "react": "^19.1.0",

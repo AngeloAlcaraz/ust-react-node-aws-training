@@ -1,33 +1,41 @@
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import AuthService from "../../services/auth-service";
 import { useNavigate } from "react-router-dom";
+import AuthService from "../../services/auth-service";
+import "./Login.css";
 
 type FormValues = {
-  username: string;
+  email: string;
   password: string;
 };
 
 export default function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },  
-  } = useForm<FormValues>();
-
-  const navigate = useNavigate();
+    trigger,
+    formState: { errors },
+  } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const isValid = await trigger(); 
+    if (!isValid) return;
+
     setMessage("");
     setLoading(true);
 
     try {
-      await AuthService.login(data.username, data.password);
+      await AuthService.login(data.email, data.password);
       setLoading(false);
-      navigate("/profile");    
+      navigate("/profile");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const resMessage =
@@ -38,66 +46,107 @@ export default function Login() {
   };
 
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
-        <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-        />
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              className={`form-control ${errors.username ? "is-invalid" : ""}`}
-              {...register("username", {
-                required: "Username is required",
-                onChange: () => setMessage(""),
-              })}
-            />
-            {errors.username && (
-              <div className="invalid-feedback">{errors.username.message}</div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              className={`form-control ${errors.password ? "is-invalid" : ""}`}
-              {...register("password", {
-                required: "Password is required",
-                onChange: () => setMessage(""),
-              })}
-            />
-            {errors.password && (
-              <div className="invalid-feedback">{errors.password.message}</div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
-              {loading && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
+    <div className="login-wrapper">
+      <div className="login-container">
+        <div className="modal-header">
+          <h5 className="modal-title">Please login to your account</h5>
+        </div>
+        <div className="modal-body">
+          <img
+            src="http://localhost:5173/assets/logo-3.svg"
+            style={{ width: "138px" }}
+            alt="logo"
+          />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{ border: "none", background: "none" }}
+            noValidate
+          >
+            <div className="mb-3">
+              <div className="input-group">
+                <input
+                  type="email"
+                  className={`form-control ${errors.email ? "input-error" : ""}`}
+                  placeholder="email address"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email format",
+                    },
+                  })}
+                  disabled={loading}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  aria-describedby="email-error"
+                />
+                <span className="input-group-text">
+                  <i className="fas fa-envelope"></i>
+                </span>
+              </div>
+              {errors.email && (
+                <div id="email-error" className="error-message" role="alert">
+                  {errors.email.message}
+                </div>
               )}
-              Login
-            </button>
-          </div>
+            </div>
 
-          {message && (
-            <div className="form-group">
-              <div className="alert alert-danger" role="alert">
+            <div className="mb-3" style={{ position: "relative" }}>
+              <div className="input-group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className={`form-control ${errors.password ? "input-error" : ""}`}
+                  placeholder="password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                  disabled={loading}
+                  aria-invalid={errors.password ? "true" : "false"}
+                  aria-describedby="password-error"
+                />
+                <button
+                  type="button"
+                  className="input-group-text password-toggle"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  style={{ position: "absolute", top: "23px", left: "223px", cursor: "pointer" }}
+                >
+                  <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                </button>
+              </div>
+              {errors.password && (
+                <div id="password-error" className="error-message" role="alert">
+                  {errors.password.message}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-login"
+              disabled={loading}
+              aria-busy={loading}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+
+            {message && (
+              <div className="alert alert-danger mt-2" role="alert">
                 {message}
               </div>
+            )}
+
+            <div className="register-link">
+              Don't have an account?{" "}
+              <a href="#" className="text-decoration-none">
+                Register now
+              </a>
             </div>
-          )}
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
